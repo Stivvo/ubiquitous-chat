@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1297bfbb-6beb-480d-a37b-37efb146c8f6" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FavoritesManager">
+    <favorites_list name="forum" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1UFbzSN6rqGwoyLYJ2Fc0x1efGi" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="UI_DESIGNER_EDITOR_MODE.PaletteManager.SHOW" value="true" />
+    <property name="UI_DESIGNER_EDITOR_MODE.PaletteManager.WIDTH" value="215" />
+    <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.WIDTH" value="439" />
+    <property name="last_opened_file_path" value="/usr/bin" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.externalDependencies" />
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="replace" />
+      <command value="forum" />
+    </option>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="Application" />
+      </set>
+    </option>
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Compound.forum">
+    <configuration name="Client" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.code.Client" />
+      <module name="forum" />
+      <option name="PROGRAM_PARAMETERS" value="prova" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.code.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Login" type="Application" factoryName="Application" singleton="false" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.code.Login" />
+      <module name="forum" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.code.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.code.Server" />
+      <module name="forum" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.code.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CompoundRunConfigurationType">
+      <toRun name="Server" type="Application" />
+      <toRun name="Login" type="Application" />
+      <method v="2" />
+    </configuration>
+    <configuration name="forum" type="CompoundRunConfigurationType">
+      <toRun name="Server" type="Application" />
+      <toRun name="Login" type="Application" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Client" />
+      <item itemvalue="Application.Server" />
+      <item itemvalue="Application.Login" />
+      <item itemvalue="Compound.forum" />
+    </list>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="allServicesViewState">
+      <serviceView>
+        <option name="contentProportion" value="0.1891892" />
+        <treeState>
+          <expand>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@a327655c" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+            </path>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@a327655c" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@f9c9052a" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+            </path>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@a327655c" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@ce15766" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+            </path>
+          </expand>
+          <select />
+        </treeState>
+      </serviceView>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1297bfbb-6beb-480d-a37b-37efb146c8f6" name="Default Changelist" comment="" />
+      <created>1574955552077</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1574955552077</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2344" y="224" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1575221279198">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2338" y="179" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.3840.1053@0.27.3840.1053" timestamp="1574969586336" />
+    <state x="2344" y="224" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575221279198" />
+    <state x="2688" y="233" width="374" height="584" key="#com.intellij.ide.util.MemberChooser" timestamp="1574961155097">
+      <screen x="0" y="27" width="3840" height="1053" />
+    </state>
+    <state x="2688" y="233" width="374" height="584" key="#com.intellij.ide.util.MemberChooser/0.27.3840.1053@0.27.3840.1053" timestamp="1574961155097" />
+    <state x="806" y="458" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1575313202651">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="806" y="458" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1575313202651" />
+    <state x="2726" y="458" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575209895279" />
+    <state x="2755" y="408" width="240" height="234" key="#com.intellij.uiDesigner.palette.ComponentItemDialog.OneOff" timestamp="1574958394713">
+      <screen x="0" y="27" width="3840" height="1053" />
+    </state>
+    <state x="2755" y="408" width="240" height="234" key="#com.intellij.uiDesigner.palette.ComponentItemDialog.OneOff/0.27.3840.1053@0.27.3840.1053" timestamp="1574958394713" />
+    <state x="2520" y="280" width="719" height="542" key="FileChooserDialogImpl" timestamp="1575210216308">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2515" y="267" width="719" height="528" key="FileChooserDialogImpl/0.27.3840.1053@0.27.3840.1053" timestamp="1574966917697" />
+    <state x="2520" y="280" width="719" height="542" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575210216308" />
+    <state width="1291" height="206" key="GridCell.Tab.0.bottom" timestamp="1575318558903">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1575318558903" />
+    <state width="1874" height="131" key="GridCell.Tab.0.bottom/0.27.1920.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1575217060476" />
+    <state width="1874" height="126" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1575217292375" />
+    <state width="1874" height="156" key="GridCell.Tab.0.bottom/0.27.3840.1053@0.27.3840.1053" timestamp="1574971141681" />
+    <state width="1563" height="204" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575227843780" />
+    <state width="1291" height="206" key="GridCell.Tab.0.center" timestamp="1575318558903">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1575318558903" />
+    <state width="1874" height="131" key="GridCell.Tab.0.center/0.27.1920.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1575217060476" />
+    <state width="1874" height="126" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1575217292374" />
+    <state width="1874" height="156" key="GridCell.Tab.0.center/0.27.3840.1053@0.27.3840.1053" timestamp="1574971141681" />
+    <state width="1563" height="204" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575227843780" />
+    <state width="1291" height="206" key="GridCell.Tab.0.left" timestamp="1575318558903">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1575318558903" />
+    <state width="1874" height="131" key="GridCell.Tab.0.left/0.27.1920.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1575217060476" />
+    <state width="1874" height="126" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1575217292374" />
+    <state width="1874" height="156" key="GridCell.Tab.0.left/0.27.3840.1053@0.27.3840.1053" timestamp="1574971141681" />
+    <state width="1563" height="204" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575227843780" />
+    <state width="1291" height="206" key="GridCell.Tab.0.right" timestamp="1575318558903">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1575318558903" />
+    <state width="1874" height="131" key="GridCell.Tab.0.right/0.27.1920.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1575217060476" />
+    <state width="1874" height="126" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1575217292375" />
+    <state width="1874" height="156" key="GridCell.Tab.0.right/0.27.3840.1053@0.27.3840.1053" timestamp="1574971141681" />
+    <state width="1563" height="204" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575227843780" />
+    <state width="1291" height="206" key="GridCell.Tab.1.bottom" timestamp="1575314399239">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.1.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1575314399239" />
+    <state width="1291" height="206" key="GridCell.Tab.1.center" timestamp="1575314399239">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.1.center/0.0.1920.1080@0.0.1920.1080" timestamp="1575314399239" />
+    <state width="1291" height="206" key="GridCell.Tab.1.left" timestamp="1575314399239">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.1.left/0.0.1920.1080@0.0.1920.1080" timestamp="1575314399239" />
+    <state width="1291" height="206" key="GridCell.Tab.1.right" timestamp="1575314399239">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1291" height="206" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1575314399239" />
+    <state x="2889" y="36" width="937" height="1030" key="GuiDesigner.FormSource.Dialog" timestamp="1575222259475">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2889" y="36" width="937" height="1030" key="GuiDesigner.FormSource.Dialog/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575222259475" />
+    <state x="2430" y="167" width="900" height="767" key="SettingsEditor" timestamp="1575210294610">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2369" y="156" width="1022" height="737" key="SettingsEditor/0.27.3840.1053@0.27.3840.1053" timestamp="1574966927638" />
+    <state x="2430" y="167" width="900" height="767" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575210294610" />
+    <state x="491" y="36" width="937" height="1030" key="com.intellij.ide.util.TipDialog" timestamp="1575313186726">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="491" y="36" key="com.intellij.ide.util.TipDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1575313186725" />
+    <state x="10" y="8" key="com.intellij.ide.util.TipDialog/0.27.1920.1053/1920.0.1920.1080@1920.0.1920.1080" timestamp="1575217104321" />
+    <state x="10" y="8" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1575217178605" />
+    <state x="625" y="393" width="669" height="315" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1575214684885" />
+    <state x="2411" y="36" width="937" height="1030" key="com.intellij.ide.util.TipDialog/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575227981328" />
+    <state x="3192" y="214" width="672" height="695" key="run.anything.popup" timestamp="1575225071458">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2544" y="236" width="672" height="677" key="run.anything.popup/0.27.3840.1053@0.27.3840.1053" timestamp="1574967928834" />
+    <state x="1272" y="214" width="672" height="695" key="run.anything.popup/1920.0.1920.1080/0.0.1920.1080@0.0.1920.1080" timestamp="1575214641373" />
+    <state x="3192" y="214" width="672" height="695" key="run.anything.popup/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575225071458" />
+    <state x="3192" y="189" width="672" height="696" key="search.everywhere.popup" timestamp="1575223762156">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2543" y="211" width="672" height="678" key="search.everywhere.popup/0.27.3840.1053@0.27.3840.1053" timestamp="1574967936433" />
+    <state x="3192" y="189" width="672" height="696" key="search.everywhere.popup/1920.0.1920.1080/0.0.1920.1080@1920.0.1920.1080" timestamp="1575223762156" />
+  </component>
+</project>
