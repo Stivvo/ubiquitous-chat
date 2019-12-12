@@ -1,4 +1,4 @@
-package com.code;
+package code;
 
 import javax.swing.*;
 import javax.xml.crypto.Data;
@@ -36,7 +36,8 @@ public class Login {
 
     public static void main(String[] args) throws Exception {
         JFrame frame = new JFrame("login");
-        frame.setContentPane(new Login().panel1);
+        Login login = new Login();
+        frame.setContentPane(login.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

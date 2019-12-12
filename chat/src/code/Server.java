@@ -1,4 +1,4 @@
-package com.code;
+package code;
 
 import javax.xml.crypto.Data;
 import java.io.BufferedReader;
@@ -11,7 +11,8 @@ public class Server {
 
     private static int maxClients = 50;
 
-    public static void main(String[] args) throws IOException {
+    public static
+    void main(String[] args) throws IOException {
         DatagramSocket receiveSock = new DatagramSocket(6787);
         MulticastSocket sendSock = new MulticastSocket();
         sendSock.joinGroup(InetAddress.getByName("225.4.5.6"));

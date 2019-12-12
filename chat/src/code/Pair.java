@@ -1,4 +1,4 @@
-package com.code;
+package code;
 
 public class Pair<K, V> {
     public final K key;
