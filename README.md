@@ -16,7 +16,7 @@ to compile this project:
 
 ~~~
 cd ubiquitous-chat/chat/src/code
-javac -d ../../out/production/chat/code/ \*java
+javac -d ../../out/production/chat/ *java
 ~~~
 
 run the server first:
