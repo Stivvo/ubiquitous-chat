@@ -22,7 +22,7 @@ javac -d ../../out/production/chat/code/ \*java
 run the server first:
 
 ~~~
-cd ubiquitous-chat/chat/out/production/chat/code
+cd ../../out/production/chat/
 java code/Server
 ~~~
 
