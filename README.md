@@ -15,20 +15,21 @@ This project has been made with IntelliJ IDEA
 to compile this project:
 
 ~~~
-cd ubiquitous-chat/forum/src
-javac com/code/\*java
+cd ubiquitous-chat/chat/src/code
+javac -d ../../out/production/chat/code/ \*java
 ~~~
 
 run the server first:
 
 ~~~
-java com/code/Server
+cd ubiquitous-chat/chat/out/production/chat/code
+java code/Server
 ~~~
 
 then Run the Login app;
 
 ~~~
-java com/code/Login
+java code/Login
 ~~~
 
 after the submit, the Client window (where you can write messages) will pop up
