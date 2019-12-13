@@ -8,11 +8,7 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class Server {
-
-    private static int maxClients = 50;
-
-    public static
-    void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         DatagramSocket receiveSock = new DatagramSocket(6787);
         MulticastSocket sendSock = new MulticastSocket();
         sendSock.joinGroup(InetAddress.getByName("225.4.5.6"));
@@ -27,41 +23,34 @@ public class Server {
             String strReceive = new String(receivePack.getData());
             strReceive = strReceive.substring(0, receivePack.getLength());
 
-            boolean foundPort, foundName;
-            foundPort = foundName = false;
+            boolean foundPort = false, foundName = false;
             for (Pair<DatagramPacket, String> i : clients) { // ricerca user e porta in clients
-                if (i.getKey().getPort() == receivePack.getPort()) {
+                if (i.getKey().getPort() == receivePack.getPort())
                     foundPort = true;
-                }
-                if (i.getValue().equals(strReceive)) {
+                if (i.getValue().equals(strReceive))
                     foundName = true;
-                }
             }
-            String strSend;
-            System.out.println("sender: port = " + receivePack.getPort() + ", name = " + foundName);
-            if (!foundPort) { // nuovo client
-                if (foundName) { // username già in uso
+            if (!foundPort) { // new client
+                String strSend;
+                if (foundName) // already used username
                     strSend = "no";
-                } else { // username libero
+                else { // free username
                     strSend = "yes";
                     clients.add(new Pair<>(receivePack, strReceive));
                 }
-                System.out.println(strSend);
+                System.out.println("sender: port = " + receivePack.getPort() +
+                        ", name = " + foundName + ", send: " + strSend);
                 byte[] outBytes = strSend.getBytes();
                 DatagramPacket sendPack = new DatagramPacket(
                         outBytes, outBytes.length, receivePack.getAddress(), receivePack.getPort());
                 receiveSock.send(sendPack);
-            } else { // client già connesso, è arrivato un messaggio
-                System.out.println("receved:");
-                System.out.print(strReceive);
-                System.out.println("allow? [Y/n] ");
-
+            } else { // an already connected cliend sent a message
+                System.out.println("receved:\n" + strReceive + "\nallow? [Y/n] ");
                 if (!kybrd.readLine().equals("n")) {
                     byte[] outBytes = strReceive.getBytes();
                     DatagramPacket sendPack = new DatagramPacket(
                             outBytes, outBytes.length, InetAddress.getByName("225.4.5.6"), 6786);
                     sendSock.send(sendPack);
-                    System.out.println("send: " + strReceive);
                 } else
                     System.out.println("not allowed");
             }
