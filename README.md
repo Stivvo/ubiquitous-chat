@@ -12,27 +12,30 @@ group chat, they get an error pop-up instead
 
 This project has been made with IntelliJ IDEA
 
-to compile this project:
+To compile this project you need the forms_rt.jar library and the
+uiDesigner/core/*class files, which are all included in this repo, they are
+IntelliJ IDEA dependencies for the GUI
 
 ~~~
+git clone https://github.com/Stivvo/ubiquitous-chat.git
 cd ubiquitous-chat/chat/src/code
-javac -d ../../out/production/chat/ *java
+javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" *java
 ~~~
 
-run the server first:
+Run the server first:
 
 ~~~
 cd ../../out/production/chat/
 java code/Server
 ~~~
 
-then Run the Login app;
+Then Run the Login app;
 
 ~~~
 java code/Login
 ~~~
 
-after the submit, the Client window (where you can write messages) will pop up
+After the submit, the Client window (where you can write messages) will pop up
 
-you can create more Client windows with the same Login window
+You can create more Client windows with the same Login window
 or run a different Login window for each Client
