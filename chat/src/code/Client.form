@@ -19,7 +19,10 @@
         <children>
           <component id="e6273" class="javax.swing.JTextArea" binding="receiveArea">
             <constraints/>
-            <properties/>
+            <properties>
+              <editable value="false"/>
+              <lineWrap value="true"/>
+            </properties>
           </component>
         </children>
       </scrollpane>
