@@ -56,8 +56,9 @@ public class Client {
 
     private DatagramSocket socket;
     private String name;
+    String serverAddress;
 
-    DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+    static DateFormat dateFormat = new SimpleDateFormat("HH:mm");
 
     int i = 17; // ctrl
     int j = 10; // enter
@@ -73,8 +74,9 @@ public class Client {
         sendArea.setText("");
     }
 
-    public Client(String name) throws IOException {
+    public Client(String name, String serverAddress) throws IOException {
         socket = new DatagramSocket();
+        this.serverAddress = serverAddress;
         this.name = name;
         send(name); // send Server this Client's name, to ask is is already used
         sendButton.addMouseListener(new MouseAdapter() {
@@ -110,18 +112,20 @@ public class Client {
     public void send(String text) throws IOException { // send text to Server
         byte[] outBytes = (text + "\n").getBytes();
         DatagramPacket sendPack = new DatagramPacket(
-                outBytes, outBytes.length, InetAddress.getByName("localhost"), 6787);
+                outBytes, outBytes.length, InetAddress.getByName(serverAddress), 6787);
         System.out.println("send:\n" + text);
         socket.send(sendPack);
     }
 
     public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame(args[0]);
-        Client client = new Client(args[0]);
+        Client client = new Client(args[0], args[1]);
         frame.setContentPane(client.panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+
+        client.serverAddress = args[1];
 
         byte[] inBytes = new byte[1024];
         DatagramPacket receivePack = new DatagramPacket(inBytes, inBytes.length);
