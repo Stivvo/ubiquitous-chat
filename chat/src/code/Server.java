@@ -24,7 +24,7 @@ public class Server {
             strReceive = strReceive.substring(0, receivePack.getLength());
 
             boolean foundPort = false, foundName = false;
-            for (Pair<DatagramPacket, String> i : clients) { // ricerca user e porta in clients
+            for (Pair<DatagramPacket, String> i : clients) { // search user and port in clients
                 if (i.getKey().getPort() == receivePack.getPort())
                     foundPort = true;
                 if (i.getValue().equals(strReceive))
@@ -38,14 +38,14 @@ public class Server {
                     strSend = "yes";
                     clients.add(new Pair<>(receivePack, strReceive));
                 }
-                System.out.println("sender: port = " + receivePack.getPort() +
-                        ", name = " + foundName + ", send: " + strSend);
+                System.out.println("new client: port = " + receivePack.getPort() + ", name: " + strReceive +
+                        "already used username = " + foundName + ", allow: " + strSend);
                 byte[] outBytes = strSend.getBytes();
                 DatagramPacket sendPack = new DatagramPacket(
                         outBytes, outBytes.length, receivePack.getAddress(), receivePack.getPort());
                 receiveSock.send(sendPack);
             } else { // an already connected cliend sent a message
-                System.out.println("receved:\n" + strReceive + "\nallow? [Y/n] ");
+                System.out.println(strReceive + "\nallow? [Y/n] ");
                 if (!kybrd.readLine().equals("n")) {
                     byte[] outBytes = strReceive.getBytes();
                     DatagramPacket sendPack = new DatagramPacket(
@@ -54,6 +54,7 @@ public class Server {
                 } else
                     System.out.println("not allowed");
             }
+            System.out.println("server address: " + InetAddress.getLocalHost().getHostAddress());
         }
     }
 }
