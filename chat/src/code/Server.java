@@ -30,30 +30,34 @@ public class Server {
                 if (i.getValue().equals(strReceive))
                     foundName = true;
             }
-            if (!foundPort) { // new client
-                String strSend;
+            String strSend;
+            if (!foundPort) { // new client, allow it?
                 if (foundName) // already used username
                     strSend = "no";
+                else if (strReceive.contains("@")) // user conencted to a closed server
+                    strSend = "ko";
                 else { // free username
                     strSend = "yes";
                     clients.add(new Pair<>(receivePack, strReceive));
                 }
                 System.out.println("new client: port = " + receivePack.getPort() + ", name: " + strReceive +
                         "already used username = " + foundName + ", allow: " + strSend);
-                byte[] outBytes = strSend.getBytes();
-                DatagramPacket sendPack = new DatagramPacket(
-                        outBytes, outBytes.length, receivePack.getAddress(), receivePack.getPort());
-                receiveSock.send(sendPack);
             } else { // an already connected cliend sent a message
                 System.out.println(strReceive + "\nallow? [Y/n] ");
-                if (!kybrd.readLine().equals("n")) {
+                if (!kybrd.readLine().equals("n")) { // allow the message?
                     byte[] outBytes = strReceive.getBytes();
                     DatagramPacket sendPack = new DatagramPacket(
                             outBytes, outBytes.length, InetAddress.getByName("225.4.5.6"), 6786);
                     sendSock.send(sendPack);
                 } else
                     System.out.println("not allowed");
+                strSend = "yes";
             }
+            // confirm to Client 
+            byte[] outBytes = strSend.getBytes();
+            DatagramPacket sendPack = new DatagramPacket(
+                    outBytes, outBytes.length, receivePack.getAddress(), receivePack.getPort());
+            receiveSock.send(sendPack);
             System.out.println("server address: " + InetAddress.getLocalHost().getHostAddress());
         }
     }

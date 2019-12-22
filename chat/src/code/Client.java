@@ -13,14 +13,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-//due main per il client, una che permette di dare in input i messaggi,
-//l'altra che mostra quello che arriva
-//così evito un thread o un timer
-
 //una lista per accodare i messaggi,
 //il server lo riceve e lo mette nella lista, in attesa che venga approvato,
 //altrimenti tutto si blocca.
-//un thread che riceve le cose e le mette nella lista, il main permette all'amministratore di approvare
+//un thread che riceve le cose e le mette nella lista,
+//il main permette all'amministratore di approvare
 
 class Receive extends Thread {
     private MulticastSocket multicast;
@@ -56,7 +53,7 @@ public class Client {
 
     private DatagramSocket socket;
     private String name;
-    String serverAddress;
+    InetAddress serverAddress;
 
     static DateFormat dateFormat = new SimpleDateFormat("HH:mm");
 
@@ -65,39 +62,61 @@ public class Client {
     boolean s1 = false;
     boolean s2 = false;
 
-    public void presSend() {
+    public void presSend() throws IOException {
+        send(name + " @ " + dateFormat.format(new Date()) + " $ " + sendArea.getText());
+
+        byte[] inBytes = new byte[1024];
+        DatagramPacket receivePack = new DatagramPacket(inBytes, inBytes.length);
+        String receiveString = "";
         try {
-            send(name + " @ " + dateFormat.format(new Date()) + " $ " + sendArea.getText());
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            socket.receive(receivePack);
+            receiveString = new String(receivePack.getData());
+        } catch (SocketTimeoutException e) {
+            JOptionPane.showMessageDialog(panel1, "server not connected");
+        } catch (IOException i) {
+            i.printStackTrace();
         }
-        sendArea.setText("");
+        if (receiveString.contains("yes"))
+            sendArea.setText("");
+        else if (receiveString.contains("ko")) // client connected to a closed server
+            JOptionPane.showMessageDialog(panel1, "client disconnected");
     }
 
-    public Client(String name, String serverAddress) throws IOException {
+    public Client(String name, String serverAddressString) throws IOException {
         socket = new DatagramSocket();
-        this.serverAddress = serverAddress;
+        this.serverAddress = InetAddress.getByName(serverAddressString);
         this.name = name;
-        send(name); // send Server this Client's name, to ask is is already used
+        send(name); // send Server this Client's name, to ask if is already used
+
         sendButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                presSend();
+                try {
+                    presSend();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
+
         sendArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-//                System.out.println("pre" + e.getKeyCode());
+                //                System.out.println("pre" + e.getKeyCode());
                 if (i == e.getKeyCode())
                     s1 = true;
 
                 if (j == e.getKeyCode())
                     s2 = true;
 
-                if (s1 == true && s2 == true)
-                    presSend();
+                if (s1 == true && s2 == true) {
+                    try {
+                        presSend();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
             public void keyReleased(KeyEvent e) {
                 if (i == e.getKeyCode())
@@ -112,7 +131,7 @@ public class Client {
     public void send(String text) throws IOException { // send text to Server
         byte[] outBytes = (text + "\n").getBytes();
         DatagramPacket sendPack = new DatagramPacket(
-                outBytes, outBytes.length, InetAddress.getByName(serverAddress), 6787);
+                outBytes, outBytes.length, serverAddress, 6787);
         System.out.println("send:\n" + text);
         socket.send(sendPack);
     }
@@ -125,76 +144,79 @@ public class Client {
         frame.pack();
         frame.setVisible(true);
 
-        client.serverAddress = args[1];
-
         byte[] inBytes = new byte[1024];
         DatagramPacket receivePack = new DatagramPacket(inBytes, inBytes.length);
-        client.socket.receive(receivePack); // read server response
-        String strReceive = new String(receivePack.getData());
 
-        if (strReceive.contains("yes")) { // free username
-            Receive receive = new Receive(client.receiveArea);
+        try {
+            client.socket.receive(receivePack);
+        } catch (SocketTimeoutException e) {
+            JOptionPane.showMessageDialog(client.panel1, "server unavailable");
+        }
+        String receiveString = new String(receivePack.getData());
+
+        if (receiveString.contains("yes")) { // free username
+            new Receive(client.receiveArea);
             frame.pack();
             frame.setVisible(true);
 
             DateFormat yearDay = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            client.receiveArea.setText("--- " + yearDay.format(new Date()) + " ---");
+            client.receiveArea.setText("--- " + yearDay.format(new Date()) + " ---\n");
         } else { // username already used
+            JOptionPane.showMessageDialog(client.panel1, "username already used");
             frame.dispose();
-            JOptionPane.showMessageDialog(frame, "username already used");
         }
-    }
+}
 
-    {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
-    }
+{
+    // GUI initializer generated by IntelliJ IDEA GUI Designer
+    // >>> IMPORTANT!! <<<
+    // DO NOT EDIT OR ADD ANY CODE HERE!
+    $$$setupUI$$$();
+}
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(5, 6, new Insets(0, 0, 0, 0), -1, -1));
-        final JScrollPane scrollPane1 = new JScrollPane();
-        panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(300, 150), null, 0, false));
-        receiveArea = new JTextArea();
-        receiveArea.setEditable(false);
-        receiveArea.setLineWrap(true);
-        scrollPane1.setViewportView(receiveArea);
-        sendButton = new JButton();
-        sendButton.setText("Send");
-        panel1.add(sendButton, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, 50), null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        panel1.add(spacer1, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        panel1.add(spacer2, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
-        final Spacer spacer3 = new Spacer();
-        panel1.add(spacer3, new GridConstraints(1, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, 5), null, null, 0, false));
-        final Spacer spacer4 = new Spacer();
-        panel1.add(spacer4, new GridConstraints(0, 5, 4, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, 5), null, null, 0, false));
-        final Spacer spacer5 = new Spacer();
-        panel1.add(spacer5, new GridConstraints(4, 1, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
-        final Spacer spacer6 = new Spacer();
-        panel1.add(spacer6, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
-        final JScrollPane scrollPane2 = new JScrollPane();
-        panel1.add(scrollPane2, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(200, 50), null, 0, false));
-        sendArea = new JTextArea();
-        sendArea.setLineWrap(true);
-        scrollPane2.setViewportView(sendArea);
-    }
+/**
+ * Method generated by IntelliJ IDEA GUI Designer
+ * >>> IMPORTANT!! <<<
+ * DO NOT edit this method OR call it in your code!
+ *
+ * @noinspection ALL
+ */
+private void $$$setupUI$$$() {
+    panel1 = new JPanel();
+    panel1.setLayout(new GridLayoutManager(5, 6, new Insets(0, 0, 0, 0), -1, -1));
+    final JScrollPane scrollPane1 = new JScrollPane();
+    panel1.add(scrollPane1, new GridConstraints(1, 1, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(300, 150), null, 0, false));
+    receiveArea = new JTextArea();
+    receiveArea.setEditable(false);
+    receiveArea.setLineWrap(true);
+    scrollPane1.setViewportView(receiveArea);
+    sendButton = new JButton();
+    sendButton.setText("Send");
+    panel1.add(sendButton, new GridConstraints(3, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, 50), null, 0, false));
+    final Spacer spacer1 = new Spacer();
+    panel1.add(spacer1, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
+    final Spacer spacer2 = new Spacer();
+    panel1.add(spacer2, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
+    final Spacer spacer3 = new Spacer();
+    panel1.add(spacer3, new GridConstraints(1, 0, 3, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, 5), null, null, 0, false));
+    final Spacer spacer4 = new Spacer();
+    panel1.add(spacer4, new GridConstraints(0, 5, 4, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, new Dimension(5, 5), null, null, 0, false));
+    final Spacer spacer5 = new Spacer();
+    panel1.add(spacer5, new GridConstraints(4, 1, 1, 5, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
+    final Spacer spacer6 = new Spacer();
+    panel1.add(spacer6, new GridConstraints(3, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(5, 5), null, null, 0, false));
+    final JScrollPane scrollPane2 = new JScrollPane();
+    panel1.add(scrollPane2, new GridConstraints(3, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(200, 50), null, 0, false));
+    sendArea = new JTextArea();
+    sendArea.setLineWrap(true);
+    scrollPane2.setViewportView(sendArea);
+}
 
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return panel1;
-    }
+/**
+ * @noinspection ALL
+ */
+public JComponent $$$getRootComponent$$$() {
+    return panel1;
+}
 
 }
