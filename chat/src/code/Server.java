@@ -38,44 +38,40 @@ class ServerThread extends Thread {
         DataOutputStream toClient = new DataOutputStream(receiveSock.getOutputStream());
         BufferedReader kybrd = new BufferedReader(new InputStreamReader(System.in));
 
-        while (true) {
-            String strReceive = fromClient.readLine();
-            if (strReceive.equals("end")) // client disconnected
-                break;
+        // before while, new client
+        String strReceive = fromClient.readLine();
+        String strSend;
 
+        if (strReceive.contains("@"))
+            strSend = "ko"; // user conencted to a closed server
+        else {
+            strSend = "no";
             sendMaphore.acquire();
-            boolean foundPort = false, foundName = false;
             for (Pair<Socket, String> i : clients) { // search user and port in clients
-                if (i.getKey().getPort() == receiveSock.getPort())
-                    foundPort = true;
-                if (i.getValue().equals(strReceive))
-                    foundName = true;
-            }
-            String strSend;
-            if (!foundPort) { // new client, allow it?
-                if (foundName) // already used username
-                    strSend = "no";
-                else if (strReceive.contains("@")) // user conencted to a closed server
-                    strSend = "ko";
-                else { // free username
-                    strSend = "yes";
+                if (i.getValue().equals(strReceive)){
+                    strSend = "yes"; // free username
                     clients.add(new Pair<>(receiveSock, strReceive));
                 }
-                System.out.println("new client: port = " + receiveSock.getPort() + ", name: " + strReceive +
-                        "already used username = " + foundName + ", allow: " + strSend);
-                sendMaphore.release();
-            } else { // an already connected cliend sent a message
-                sendMaphore.release();
-                System.out.println(strReceive + "\nallow? [Y/n] ");
-                if (!kybrd.readLine().equals("n")) { // allow the message?
-                    byte[] outBytes = strReceive.getBytes();
-                    DatagramPacket sendPack = new DatagramPacket(
-                            outBytes, outBytes.length, InetAddress.getByName("225.4.5.6"), 6786);
-                    sendSock.send(sendPack);
-                } else
-                    System.out.println("not allowed");
-                strSend = "yes";
             }
+            sendMaphore.release();
+            System.out.println("new client: port = " + receiveSock.getPort() + 
+                    ", name: " + strReceive + ", allow: " + strSend);
+        }
+
+        while (true) { // an already connected cliend sending messages
+            strReceive = fromClient.readLine();
+            if (strReceive.equals("end")) // client wants to be disconnected
+                break;
+
+            System.out.println(strReceive + "\nallow? [Y/n] ");
+            if (!kybrd.readLine().equals("n")) { // allow the message?
+                byte[] outBytes = strReceive.getBytes();
+                DatagramPacket sendPack = new DatagramPacket(
+                        outBytes, outBytes.length, InetAddress.getByName("225.4.5.6"), 6786);
+                sendSock.send(sendPack);
+            } else
+                System.out.println("not allowed");
+            strSend = "yes";
             toClient.writeBytes(strSend + "\n"); // confirm to Client
             // remind server address
             System.out.println("server address: " + InetAddress.getLocalHost().getHostAddress());

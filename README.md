@@ -11,13 +11,13 @@ This project has been made with IntelliJ IDEA
 
 ## Compile
 To compile this project you need the forms_rt.jar library and the
-uiDesigner/core/*class files, which are all included in this repo, they are
+uiDesigner/core/\*class files, which are all included in this repo, they are
 IntelliJ IDEA dependencies for the GUI
 
 ~~~
 git clone https://github.com/Stivvo/ubiquitous-chat.git
 cd ubiquitous-chat/chat/src/code
-javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" *java
+javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" \*java
 ~~~
 
 # Run

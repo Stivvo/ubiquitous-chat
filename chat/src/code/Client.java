@@ -7,11 +7,14 @@ import com.intellij.uiDesigner.core.Spacer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
+import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 //una lista per accodare i messaggi,
 //il server lo riceve e lo mette nella lista, in attesa che venga approvato,
@@ -51,7 +54,9 @@ public class Client {
     private JTextArea sendArea;
     private JButton sendButton;
 
-    private DatagramSocket socket;
+    private Socket socket;
+    public BufferedReader fromServer;
+    public DataOutputStream toServer;
     private String name;
     InetAddress serverAddress;
 
@@ -65,12 +70,9 @@ public class Client {
     public void presSend() throws IOException {
         send(name + " @ " + dateFormat.format(new Date()) + " $ " + sendArea.getText());
 
-        byte[] inBytes = new byte[1024];
-        DatagramPacket receivePack = new DatagramPacket(inBytes, inBytes.length);
         String receiveString = "";
         try {
-            socket.receive(receivePack);
-            receiveString = new String(receivePack.getData());
+            receiveString = fromServer.readLine();
         } catch (SocketTimeoutException e) {
             JOptionPane.showMessageDialog(panel1, "server not connected");
         } catch (IOException i) {
@@ -83,7 +85,9 @@ public class Client {
     }
 
     public Client(String name, String serverAddressString) throws IOException {
-        socket = new DatagramSocket();
+        socket = new Socket(serverAddressString, 6787);
+        fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        toServer = new DataOutputStream(socket.getOutputStream());
         this.serverAddress = InetAddress.getByName(serverAddressString);
         this.name = name;
         send(name); // send Server this Client's name, to ask if is already used
@@ -129,11 +133,8 @@ public class Client {
     }
 
     public void send(String text) throws IOException { // send text to Server
-        byte[] outBytes = (text + "\n").getBytes();
-        DatagramPacket sendPack = new DatagramPacket(
-                outBytes, outBytes.length, serverAddress, 6787);
         System.out.println("send:\n" + text);
-        socket.send(sendPack);
+        toServer.writeBytes(text + "\n");
     }
 
     public static void main(String[] args) throws IOException {
@@ -143,16 +144,13 @@ public class Client {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
-
-        byte[] inBytes = new byte[1024];
-        DatagramPacket receivePack = new DatagramPacket(inBytes, inBytes.length);
+        String receiveString = "";
 
         try {
-            client.socket.receive(receivePack);
+            receiveString = client.fromServer.readLine();
         } catch (SocketTimeoutException e) {
             JOptionPane.showMessageDialog(client.panel1, "server unavailable");
         }
-        String receiveString = new String(receivePack.getData());
 
         if (receiveString.contains("yes")) { // free username
             new Receive(client.receiveArea);
