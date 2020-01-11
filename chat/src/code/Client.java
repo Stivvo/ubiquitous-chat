@@ -42,8 +42,9 @@ class Receive extends Thread {
                 e.printStackTrace();
             }
             String receiveString = new String(receivePack.getData());
+            receiveString = receiveString.substring(0, receivePack.getLength());
             System.out.println("received: " + receiveString);
-            area.setText(area.getText() + receiveString);
+            area.setText(area.getText() + receiveString + "\n");
         }
     }
 }
@@ -85,7 +86,7 @@ public class Client {
     }
 
     public Client(String name, String serverAddressString) throws IOException {
-        socket = new Socket(serverAddressString, 6787);
+        socket = new Socket(serverAddressString, 6789);
         fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         toServer = new DataOutputStream(socket.getOutputStream());
         this.serverAddress = InetAddress.getByName(serverAddressString);

@@ -17,7 +17,7 @@ IntelliJ IDEA dependencies for the GUI
 ~~~
 git clone https://github.com/Stivvo/ubiquitous-chat.git
 cd ubiquitous-chat/chat/src/code
-javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" \*java
+javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" *java
 ~~~
 
 # Run
