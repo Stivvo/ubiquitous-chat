@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.*;
 
 class ServerThread extends Thread {
@@ -14,7 +15,7 @@ class ServerThread extends Thread {
     public Socket tcpSock;
 
     public static Semaphore sendMaphore = new Semaphore(0);
-    public static ArrayList<Pair<Socket, String>> clients = new ArrayList<Pair<Socket, String>>();
+    public static List<String> clients = new ArrayList<>();
 
     public ServerThread(Socket socket) {
         try {
@@ -31,35 +32,39 @@ class ServerThread extends Thread {
         BufferedReader kybrd = new BufferedReader(new InputStreamReader(System.in));
 
         // before while, new client
-        String strReceive = fromClient.readLine();
+        String name = fromClient.readLine();
         String strSend;
 
-        if (strReceive.contains("@"))
-            strSend = "ko"; // user conencted to a closed server
+        if (name.contains("@"))
+            strSend = "ko"; // user connected to a closed server
         else {
             strSend = "yes";
+            for (String i : clients) {
+                System.out.println("client: " + i + "\n");
+            }
             //sendMaphore.acquire();
-            for (Pair<Socket, String> i : clients) { // search user and port in clients
-                if (i.getValue().equals(strReceive)){
+            for (String i : clients) { // search user and port in clients
+                if (i.equals(name)) {
                     strSend = "no"; // busy username
                 }
             }
-            if (strSend.equals("yes")) // fre username, add to list
-                clients.add(new Pair<>(tcpSock, strReceive));
+            System.out.println("new client: port = " + tcpSock.getPort() +
+                    ", name: " + name + ", allow: " + strSend);
+            toClient.writeBytes(strSend + "\n");
+            if (strSend.equals("yes")) // free username, add to list
+                clients.add(name);
             else
                 tcpSock.close();
-
             //sendMaphore.release();
-            System.out.println("new client: port = " + tcpSock.getPort() + 
-                    ", name: " + strReceive + ", allow: " + strSend);
-            toClient.writeBytes(strSend + "\n");
         }
 
         while (true) { // an already connected cliend sending messages
             System.out.println("in while");
-            strReceive = fromClient.readLine();
+            String strReceive = fromClient.readLine();
             if (strReceive.equals("end")) {
                 tcpSock.close(); // client wants to be disconnected
+                System.out.println(name + " wants to be disconnected");
+                clients.remove(name);
                 break;
             }
 
