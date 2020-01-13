@@ -1,4 +1,5 @@
 # ubiquitous-chat
+
 group chat in java and swing GUI
 
 You can run this chat on different computers connected to the same network and
@@ -10,6 +11,7 @@ The administrator (server) of the chat has to approve or discard every message
 This project has been made with IntelliJ IDEA
 
 ## Compile
+
 To compile this project you need the forms_rt.jar library and the
 uiDesigner/core/\*class files, which are all included in this repo, they are
 IntelliJ IDEA dependencies for the GUI
@@ -21,6 +23,7 @@ javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" *java
 ~~~
 
 # Run
+
 Run the server first:
 
 ~~~
@@ -29,7 +32,8 @@ java code/Server
 ~~~
 
 The Server must run on the terminal. Stop it pressing ctr+c or closing the
-terminal where the Server is running when all clients are disconnected
+terminal where the Server is running when all clients are disconnected.
+
 Open another terminal in the same directory, then Run the Login app;
 
 ~~~
@@ -37,6 +41,7 @@ java code/Login
 ~~~
 
 # Usage
+
 After the submit, the Client window (where you can write messages) will pop up
 
 If the username is already in use the client can't establish a connection with

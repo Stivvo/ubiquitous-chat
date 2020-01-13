@@ -35,7 +35,8 @@ class Receive extends Thread {
     public void run() {
         while (true) {
             byte[] inBytes = new byte[1024];
-            DatagramPacket receivePack = new DatagramPacket(inBytes, inBytes.length);
+            DatagramPacket receivePack = new DatagramPacket(
+                    inBytes, inBytes.length);
             try {
                 multicast.receive(receivePack);
             } catch (IOException e) {
@@ -69,104 +70,115 @@ public class Client {
     boolean s1 = false;
     boolean s2 = false;
 
-    public void presSend() throws IOException {
-        send(name + " @ " + dateFormat.format(new Date()) + " $ " + sendArea.getText());
+    JFrame frame;
 
-        String receiveString = "";
-        try {
-            receiveString = fromServer.readLine();
-        } catch (SocketTimeoutException e) {
-            JOptionPane.showMessageDialog(panel1, "server not connected");
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-        if (receiveString.contains("yes"))
-            sendArea.setText("");
-        else if (receiveString.contains("ko")) // client connected to a closed server
-            JOptionPane.showMessageDialog(panel1, "client disconnected");
+    public void presSend() throws IOException {
+        send(name + " @ " + dateFormat.format(
+                    new Date()) + " $ " + sendArea.getText());
+        sendArea.setText("");
     }
 
-    public Client(String name, String serverAddressString, JFrame frame) throws IOException {
-        socket = new Socket(serverAddressString, 6789);
-        fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        toServer = new DataOutputStream(socket.getOutputStream());
-        this.serverAddress = InetAddress.getByName(serverAddressString);
-        this.name = name;
-        send(name); // send Server this Client's name, to ask if is already used
+    public void end() {
+        try {
+            send("end\n");
+            socket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-        sendButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                try {
-                    presSend();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+    public Client(String name, String serverAddressString, JFrame frame) 
+            throws IOException {
+            this.frame = frame;
+            socket = new Socket(serverAddressString, 6789);
+            fromServer = new BufferedReader(new InputStreamReader(
+                        socket.getInputStream()));
+            toServer = new DataOutputStream(socket.getOutputStream());
+            this.serverAddress = InetAddress.getByName(serverAddressString);
+            this.name = name;
+            send(name); // send Server this Client's name, to ask if is already used
 
-        sendArea.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                //                System.out.println("pre" + e.getKeyCode());
-                if (i == e.getKeyCode())
-                    s1 = true;
-
-                if (j == e.getKeyCode())
-                    s2 = true;
-
-                if (s1 == true && s2 == true) {
+            sendButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
                     try {
                         presSend();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
-            }
+            });
 
-            public void keyReleased(KeyEvent e) {
-                if (i == e.getKeyCode())
-                    s1 = false;
+            sendArea.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    //                System.out.println("pre" + e.getKeyCode());
+                    if (i == e.getKeyCode())
+                        s1 = true;
 
-                if (j == e.getKeyCode())
-                    s2 = false;
-            }
-        });
-        quitButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                try {
-                    send("end\n");
-                    socket.close();
-                    frame.dispose();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                    if (j == e.getKeyCode())
+                        s2 = true;
+
+                    if (s1 == true && s2 == true) {
+                        try {
+                            presSend();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
                 }
-            }
-        });
+
+                public void keyReleased(KeyEvent e) {
+                    if (i == e.getKeyCode())
+                        s1 = false;
+
+                    if (j == e.getKeyCode())
+                        s2 = false;
+                }
+            });
+            quitButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    super.mousePressed(e);
+                    end();
+                    frame.dispose();
+                }
+            });
     }
 
-    public void send(String text) throws IOException { // send text to Server
-        System.out.println("send:\n" + text);
-        toServer.writeBytes(text + "\n");
+    public void send(String text){ // send text to Server
+        try {
+            System.out.println("send:\n" + text);
+            toServer.writeBytes(text + "\n");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(
+                    this.panel1, "server unavailable");
+            try {
+                socket.close();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            frame.dispose();
+        }
     }
 
     public static void main(String[] args) throws IOException {
         JFrame frame = new JFrame(args[0]);
         Client client = new Client(args[0], args[1], frame);
         frame.setContentPane(client.panel1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+                client.end();
+                System.exit(0);
+            }
+        });
+
         frame.pack();
         frame.setVisible(true);
-        String receiveString = "";
-
-        try {
-            receiveString = client.fromServer.readLine();
-        } catch (SocketTimeoutException e) {
-            JOptionPane.showMessageDialog(client.panel1, "server unavailable");
-        }
+        String receiveString = client.fromServer.readLine();
+        System.out.println("receiveString: " + receiveString);
 
         if (receiveString.contains("yes")) { // free username
             new Receive(client.receiveArea);
@@ -174,17 +186,19 @@ public class Client {
             frame.setVisible(true);
 
             DateFormat yearDay = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            client.receiveArea.setText("--- " + yearDay.format(new Date()) + " ---\n");
+            client.receiveArea.setText(
+                    "--- " + yearDay.format(new Date()) + " ---\n");
         } else { // username already used
-            JOptionPane.showMessageDialog(client.panel1, "username already used");
             frame.dispose();
+            JOptionPane.showMessageDialog(
+                    client.panel1, "username already used");
         }
     }
 
     {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
+        // GUI initializer generated by IntelliJ IDEA GUI Designer
+        // >>> IMPORTANT!! <<<
+        // DO NOT EDIT OR ADD ANY CODE HERE!
         $$$setupUI$$$();
     }
 
