@@ -23,35 +23,53 @@ import java.text.SimpleDateFormat;
 //il main permette all'amministratore di approvare
 
 class Receive extends Thread {
-    private MulticastSocket multicast;
     private JTextArea area;
+    String serverAddressString;
+    private BufferedReader fromServer;
+    private Socket socket;
+    private JPanel panel;
 
-    public Receive(JTextArea area) throws IOException {
+    public Receive(JTextArea area, JPanel panel,
+            String serverAddressString) throws IOException {
         this.area = area;
-        multicast = new MulticastSocket(6786);
-        multicast.joinGroup(InetAddress.getByName("225.4.5.6"));
+        this.serverAddressString = serverAddressString;
         start();
     }
+
     public void run() {
+        try {
+            socket = new Socket(serverAddressString, 6790);
+            fromServer = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String receiveString;
         while (true) {
-            byte[] inBytes = new byte[1024];
-            DatagramPacket receivePack = new DatagramPacket(
-                    inBytes, inBytes.length);
             try {
-                multicast.receive(receivePack);
-            } catch (IOException e) {
+                receiveString = fromServer.readLine();
+                if (receiveString.equals("null"))
+                    break;
+            } catch (Exception e) {
                 e.printStackTrace();
+                break;
             }
-            String receiveString = new String(receivePack.getData());
-            receiveString = receiveString.substring(0, receivePack.getLength());
             System.out.println("received: " + receiveString);
             area.setText(area.getText() + receiveString + "\n");
+        }
+        System.out.println("server unavailable");
+        JOptionPane.showMessageDialog(
+                this.panel, "server unavailable");
+        try {
+            socket.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
 
 public class Client {
-    private JPanel panel1;
+    public JPanel panel1;
     private JTextArea receiveArea;
     private JTextArea sendArea;
     private JButton sendButton;
@@ -87,67 +105,67 @@ public class Client {
         }
     }
 
-    public Client(String name, String serverAddressString, JFrame frame) 
-            throws IOException {
-            this.frame = frame;
-            socket = new Socket(serverAddressString, 6789);
-            fromServer = new BufferedReader(new InputStreamReader(
-                        socket.getInputStream()));
-            toServer = new DataOutputStream(socket.getOutputStream());
-            this.serverAddress = InetAddress.getByName(serverAddressString);
-            this.name = name;
-            send(name); // send Server this Client's name, to ask if is already used
+    public Client(String name, String serverAddressString,
+            JFrame frame) throws IOException {
+        this.frame = frame;
+        socket = new Socket(serverAddressString, 6789);
+        fromServer = new BufferedReader(new InputStreamReader(
+                    socket.getInputStream()));
+        toServer = new DataOutputStream(socket.getOutputStream());
+        this.serverAddress = InetAddress.getByName(serverAddressString);
+        this.name = name;
+        send(name); // send Server this Client's name, to ask if is already used
 
-            sendButton.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
+        sendButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                try {
+                    presSend();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        sendArea.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //                System.out.println("pre" + e.getKeyCode());
+                if (i == e.getKeyCode())
+                    s1 = true;
+
+                if (j == e.getKeyCode())
+                    s2 = true;
+
+                if (s1 == true && s2 == true) {
                     try {
                         presSend();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 }
-            });
+            }
 
-            sendArea.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent e) {
-                    //                System.out.println("pre" + e.getKeyCode());
-                    if (i == e.getKeyCode())
-                        s1 = true;
+            public void keyReleased(KeyEvent e) {
+                if (i == e.getKeyCode())
+                    s1 = false;
 
-                    if (j == e.getKeyCode())
-                        s2 = true;
-
-                    if (s1 == true && s2 == true) {
-                        try {
-                            presSend();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
-
-                public void keyReleased(KeyEvent e) {
-                    if (i == e.getKeyCode())
-                        s1 = false;
-
-                    if (j == e.getKeyCode())
-                        s2 = false;
-                }
-            });
-            quitButton.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    super.mousePressed(e);
-                    end();
-                    frame.dispose();
-                }
-            });
+                if (j == e.getKeyCode())
+                    s2 = false;
+            }
+        });
+        quitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                end();
+                frame.dispose();
+            }
+        });
     }
 
-    public void send(String text){ // send text to Server
+    public void send(String text) { // send text to Server
         try {
             System.out.println("send:\n" + text);
             toServer.writeBytes(text + "\n");
@@ -168,8 +186,8 @@ public class Client {
         Client client = new Client(args[0], args[1], frame);
         frame.setContentPane(client.panel1);
 
-        frame.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e){
+        frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
                 client.end();
                 System.exit(0);
             }
@@ -181,7 +199,7 @@ public class Client {
         System.out.println("receiveString: " + receiveString);
 
         if (receiveString.contains("yes")) { // free username
-            new Receive(client.receiveArea);
+            new Receive(client.receiveArea, client.panel1, args[1]);
             frame.pack();
             frame.setVisible(true);
 

@@ -10,28 +10,95 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
-class ServerThread extends Thread {
-    public Socket tcpSock;
+class SendThread extends Thread {
+    private static List<Socket> clients = new ArrayList<>();
+    private static ServerSocket sendServerSocket;
 
-    public static ServerSocket receiveServerSock;
-    public static MulticastSocket multicastSock;
-    public static Semaphore sendMaphore = new Semaphore(0);
-    public static List<String> clients = new ArrayList<>();
-
-    public ServerThread(Socket socket) {
+    static {
         try {
-            this.tcpSock = socket;
+            sendServerSocket = new ServerSocket(6790);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String msg;
+
+    public SendThread(String msg) {
+        this.msg = msg;
+    }
+
+    public static void addClient() throws IOException {
+        clients.add(sendServerSocket.accept());
+    }
+
+    public static void close() throws IOException {
+        for (Socket i : clients) {
+            try {
+                i.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } 
+        }
+        clients.clear();
+        sendServerSocket.close();
+    }
+
+    public void run() {
+        for (Socket i : clients) {
+            try {
+                DataOutputStream toClient = new DataOutputStream(
+                        i.getOutputStream());
+                toClient.writeBytes(msg + "\n");
+            } catch (Exception e) {
+                e.printStackTrace();
+                try {
+                    i.close();
+                } catch (Exception ee) {
+                    ee.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+}
+
+class ServerThread extends Thread {
+    private Socket tcpSock;
+
+    private static List<String> clients = new ArrayList<>();
+    private static List<Socket> clientsSocket = new ArrayList<>();
+    private static Semaphore sendMaphore = new Semaphore(1);
+    private static ServerSocket receiveServerSock;
+
+    static {
+        try {
+            receiveServerSock = new ServerSocket(6789);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ServerThread() {
+        try {
+            this.tcpSock = receiveServerSock.accept();
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
+    public static void close() throws IOException {
+        for (Socket i : clientsSocket)
+            i.close();
+        receiveServerSock.close();
+    }
+
     public void doStuff() throws Exception {
         System.out.println("doing stuff");
-        BufferedReader fromClient = new BufferedReader(
-                new InputStreamReader(tcpSock.getInputStream()));
         DataOutputStream toClient = new DataOutputStream(
                 tcpSock.getOutputStream());
+        BufferedReader fromClient = new BufferedReader(
+                new InputStreamReader(tcpSock.getInputStream()));
         BufferedReader kybrd = new BufferedReader(
                 new InputStreamReader(System.in));
 
@@ -54,6 +121,8 @@ class ServerThread extends Thread {
             toClient.writeBytes(strSend + "\n");
             if (strSend.equals("yes")) { // free username, add to list
                 clients.add(name);
+                clientsSocket.add(tcpSock);
+                SendThread.addClient();
                 sendMaphore.release();
             } else {
                 sendMaphore.release();
@@ -78,11 +147,8 @@ class ServerThread extends Thread {
 
                 System.out.println(strReceive + "\nallow? [Y/n] ");
                 if (!kybrd.readLine().equals("n")) { // allow the message?
-                    byte[] outBytes = strReceive.getBytes();
-                    DatagramPacket sendPack = new DatagramPacket(
-                            outBytes, outBytes.length, 
-                            InetAddress.getByName("225.4.5.6"), 6786);
-                    multicastSock.send(sendPack);
+                    SendThread sendThread = new SendThread(strReceive);
+                    sendThread.start();
                 } else
                     System.out.println("not allowed");
                 // remind server address
@@ -108,18 +174,13 @@ class ServerThread extends Thread {
 }
 
 class Server {
-
     public static void main(String[] args) throws Exception {
-        ServerThread.multicastSock = new MulticastSocket();
-        ServerThread.multicastSock.joinGroup(
-                InetAddress.getByName("225.4.5.6"));
-        ServerThread.receiveServerSock = new ServerSocket(6789);
-        ServerThread.sendMaphore.release();
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 try {
                     Thread.sleep(400);
-                    ServerThread.multicastSock.close();
+                    SendThread.close();
+                    ServerThread.close();
                     System.out.println("All socket are closed");
                 } catch (Exception e) {
                     Thread.currentThread().interrupt();
@@ -129,8 +190,7 @@ class Server {
         });
         while (true) {
             System.out.println("main while");
-            Socket socket = ServerThread.receiveServerSock.accept();
-            ServerThread serverThread = new ServerThread(socket);
+            ServerThread serverThread = new ServerThread();
             serverThread.start();
         }
     }

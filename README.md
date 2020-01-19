@@ -17,9 +17,9 @@ uiDesigner/core/\*class files, which are all included in this repo, they are
 IntelliJ IDEA dependencies for the GUI
 
 ~~~
-git clone https://github.com/Stivvo/ubiquitous-chat.git
-cd ubiquitous-chat/chat/src/code
-javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" *java
+git clone https://github.com/Stivvo/ubiquitous-chat.git cd
+ubiquitous-chat/chat/src/code javac -d ../../out/production/chat/ -cp
+".:../../forms_rt.jar" *java
 ~~~
 
 # Run
@@ -27,8 +27,7 @@ javac -d ../../out/production/chat/ -cp ".:../../forms_rt.jar" *java
 Run the server first:
 
 ~~~
-cd ../../out/production/chat/
-java code/Server
+cd ../../out/production/chat/ java code/Server
 ~~~
 
 The Server must run on the terminal. Stop it pressing ctr+c or closing the
@@ -50,8 +49,13 @@ the group chat, so you get an error pop-up instead
 When someone sends messages trough the Client window the Server must decide to
 allow the message to be forwarded to all the clients in the network
 
-You can create more Client windows with the same Login window
-or run a different Login window for each Client
+You can create more Client windows with the same Login window or run a different
+Login window for each Client
 
 After a restarting or closing the server, the already spawned client windows
 will become unusable.
+
+# Ports
+
+* 6789: Clients send messages to the server
+* 6790: Server sends messages to all clients
